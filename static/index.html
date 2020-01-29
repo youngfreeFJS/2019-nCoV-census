@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcss.com/echarts/4.4.0-rc.1/echarts.min.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+
+
+</head>
+<body>
+
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 800px;height:400px;"></div>
+<script type="text/javascript">
+
+    $.ajax({
+        url: "/api",    //请求的url地址
+        dataType: "json",   //返回格式为json
+        async: true, //请求是否异步，默认为异步，这也是ajax重要特性
+        data: {"id": "value"},    //参数值
+        type: "GET",   //请求方式
+
+        success: function (data) {
+            //请求成功时处理
+            console.log(typeof data.count);
+            let countKeyArr = Object.keys(data.count);
+            let countValArr = Object.values(data.count);
+            // 指定图表的配置项和数据
+            var colors = ['#5793f3', '#d14a61', '#675bba'];
+
+            var option = {
+
+                title: {
+                    text: data.area + '新增确诊病例统计图'
+
+                },
+                legend: {
+                    data: ['总确诊人数']
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross'
+                    }
+                },
+
+                xAxis: {
+                    data: countKeyArr,
+                    type: 'category',
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: '总确诊人数',
+                    min: 0,
+                    max: Math.max(...countValArr),
+                    position: 'left',
+                    axisLine: {
+
+                    },
+                    axisLabel: {
+                        formatter: '{value} ml'
+                    }
+                },
+                series: [{
+                    name: '总确诊人数',
+                    type: 'bar',
+                    data: countValArr
+                }]
+            };
+
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        },
+        complete: function () {
+            //请求完成的处理
+
+        },
+        error: function () {
+            //请求出错处理
+        }
+    });
+
+
+</script>
+
+
+</body>
+</html>
